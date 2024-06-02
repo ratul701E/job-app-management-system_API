@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace job_app_management_system.api.Models.DTOs
 {
     public class ApplicationDto
     {
+        public long Id { get; set; }
         [Required]
         public string JobName { get; set; }
 

@@ -55,6 +55,7 @@ namespace job_app_management_system.api.Services
             return this.dbContext.Applications
                         .Select(application => new ApplicationDto
                         {
+                            Id = application.Id,
                             JobName = application.JobName,
                             Location = application.Location,
                             PublishDate = application.PublishDate,
@@ -79,6 +80,7 @@ namespace job_app_management_system.api.Services
 
             var applicationDto = new ApplicationDto
             {
+                Id = application.Id,
                 JobName = application.JobName,
                 Location = application.Location,
                 PublishDate = application.PublishDate,
