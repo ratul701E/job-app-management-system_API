@@ -5,7 +5,7 @@ namespace job_app_management_system.api.Models.DTOs
 {
     public class ApplicationDto
     {
-        public long Id { get; set; }
+        public long JobId { get; set; }
         [Required]
         public string JobName { get; set; }
 

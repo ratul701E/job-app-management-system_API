@@ -55,7 +55,7 @@ namespace job_app_management_system.api.Services
             return this.dbContext.Applications
                         .Select(application => new ApplicationDto
                         {
-                            Id = application.Id,
+                            JobId = application.Id,
                             JobName = application.JobName,
                             Location = application.Location,
                             PublishDate = application.PublishDate,
@@ -69,9 +69,13 @@ namespace job_app_management_system.api.Services
         }
 
 
-        public ApplicationDto GetByID(int id)
+        public ApplicationDto GetByID(long id)
         {
-            var application = dbContext.Applications.FirstOrDefault(a => a.Id == id);
+            var application = dbContext.Applications
+                               .Include(a => a.Requirements)
+                               .Include(a => a.Responsibilities)
+                               .FirstOrDefault(a => a.Id == id);
+
 
             if (application == null)
             {
@@ -80,7 +84,7 @@ namespace job_app_management_system.api.Services
 
             var applicationDto = new ApplicationDto
             {
-                Id = application.Id,
+                JobId = application.Id,
                 JobName = application.JobName,
                 Location = application.Location,
                 PublishDate = application.PublishDate,

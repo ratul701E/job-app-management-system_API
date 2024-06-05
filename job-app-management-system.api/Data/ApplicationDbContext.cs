@@ -13,5 +13,7 @@ namespace job_app_management_system.api.Data
         public DbSet<Application> Applications { get; set; }
         public DbSet<Requirement> Requirements { get; set; }
         public DbSet<Responsibility> Responsibilities { get; set; }
+        public DbSet<JobApplication> JobApplications { get; set; }
+        public DbSet<Skill> Skills { get; set; }
     }
 }
