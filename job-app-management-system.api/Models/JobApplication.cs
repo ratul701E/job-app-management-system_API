@@ -14,7 +14,7 @@ namespace job_app_management_system.api.Models
 
         public string Phone { get; set; }
 
-        public DateTime? Dob { get; set; }
+        public string? Dob { get; set; }
 
         public bool IsAiubian { get; set; }
         public bool IsBscCompleted { get; set; }

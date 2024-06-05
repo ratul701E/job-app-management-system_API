@@ -6,15 +6,13 @@ namespace job_app_management_system.api.Models.Dto
     {
         public long? Id { get; set; }
 
-        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
 
-        [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
 
         public string Phone { get; set; }
 
-        public DateTime? Dob { get; set; }
+        public string? Dob { get; set; }
 
         public bool IsAiubian { get; set; }
         public bool IsBscCompleted { get; set; }
