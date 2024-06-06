@@ -112,7 +112,48 @@ namespace job_app_management_system.api.Services
 
         public ApplicationDto Update(ApplicationDto entity)
         {
-            throw new NotImplementedException();
+            var existingApplication = dbContext.Applications
+                                .Include(a => a.Requirements)
+                                .Include(a => a.Responsibilities)
+                                .FirstOrDefault(a => a.Id == entity.JobId);
+
+            if (existingApplication == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                existingApplication.JobName = entity.JobName;
+                existingApplication.PublishDate = entity.PublishDate;
+                existingApplication.Location = entity.Location;
+                existingApplication.Salary = entity.Salary;
+                existingApplication.Description = entity.Description;
+                existingApplication.Requirements.Clear();
+                existingApplication.Responsibilities.Clear();
+
+                foreach (var requirement in entity.Requirements)
+                {
+                    existingApplication.Requirements.Add(new Requirement { Description = requirement });
+                }
+
+                foreach (var responsibility in entity.Responsibilities)
+                {
+                    existingApplication.Responsibilities.Add(new Responsibility { Description = responsibility });
+                }
+
+                existingApplication.MaximumApplication = entity.MaximumApplication;
+
+                dbContext.SaveChanges();
+
+                return entity;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
+
+
     }
 }

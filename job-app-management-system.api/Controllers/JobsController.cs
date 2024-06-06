@@ -29,7 +29,11 @@ namespace job_app_management_system.api.Controllers
             return result != null ? new Result<ApplicationDto>(false, new List<string> { "Here are the data" }, result) : new Result<ApplicationDto>(false, new List<string> { "No application found with id: " + appId }, null);
         }
 
-
+        [HttpPatch("{appId:int}")]
+        public Result<ApplicationDto> UpdateApplication(int appId, [FromBody] ApplicationDto application)
+        {
+            return new Result<ApplicationDto>(false, new List<string> { "Updated" }, this.applicationService.Update(application));
+        }
 
         [HttpPost]
         public Result<ApplicationDto> PostApplication([FromBody] ApplicationDto applicationDto)
