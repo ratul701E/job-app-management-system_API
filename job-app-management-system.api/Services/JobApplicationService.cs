@@ -4,6 +4,7 @@ using job_app_management_system.api.Models.Dto;
 using job_app_management_system.api.Models.DTOs;
 using job_app_management_system.api.Models.job_app_management_system.api.Models;
 using job_app_management_system.api.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace job_app_management_system.api.Services
 {
@@ -92,7 +93,9 @@ namespace job_app_management_system.api.Services
 
         public JobApplicationDto GetByID(long id)
         {
-            var jobApplication = dbContext.JobApplications.FirstOrDefault(j => j.Id == id);
+            var jobApplication = dbContext.JobApplications
+                                          .Include(j => j.Skills)
+                                          .FirstOrDefault(j => j.Id == id);
 
             if (jobApplication == null)
             {
@@ -120,11 +123,12 @@ namespace job_app_management_system.api.Services
                 MscAdmissionYear = jobApplication.MscAdmissionYear,
                 MscGraduationYear = jobApplication.MscGraduationYear,
                 MscCGPA = jobApplication.MscCGPA,
-                Skills = jobApplication.Skills.Select(s => s.Name).ToList()
+                Skills = jobApplication.Skills != null ? jobApplication.Skills.Select(s => s.Name).ToList() : new List<string>()
             };
 
             return jobApplicationDto;
         }
+
 
         public JobApplicationDto Remove(JobApplicationDto entity)
         {

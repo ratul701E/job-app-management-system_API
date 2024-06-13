@@ -34,8 +34,10 @@ namespace job_app_management_system.api.Services
                     {
                         Description = r
                     }).ToList(),
-                    MaximumApplication = entity.MaximumApplication
+                    MaximumApplication = entity.MaximumApplication,
+                    AcceptingResponse = true
                 };
+                   
 
                 dbContext.Applications.Add(application);
                 dbContext.SaveChanges();
@@ -63,7 +65,8 @@ namespace job_app_management_system.api.Services
                             Description = application.Description,
                             Requirements = application.Requirements != null ? application.Requirements.Select(r => r.Description).ToList() : new List<string>(),
                             Responsibilities = application.Responsibilities != null ? application.Responsibilities.Select(r => r.Description).ToList() : new List<string>(),
-                            MaximumApplication = application.MaximumApplication
+                            MaximumApplication = application.MaximumApplication,
+                            AcceptingResponse = application.AcceptingResponse
                         })
                         .ToList();
         }
@@ -92,7 +95,8 @@ namespace job_app_management_system.api.Services
                 Description = application.Description,
                 Requirements = application.Requirements != null ? application.Requirements.Select(r => r.Description).ToList() : new List<string>(),
                 Responsibilities = application.Responsibilities != null ? application.Responsibilities.Select(r => r.Description).ToList() : new List<string>(),
-                MaximumApplication = application.MaximumApplication
+                MaximumApplication = application.MaximumApplication,
+                AcceptingResponse = application.AcceptingResponse
             };
 
             return applicationDto;
@@ -143,6 +147,7 @@ namespace job_app_management_system.api.Services
                 }
 
                 existingApplication.MaximumApplication = entity.MaximumApplication;
+                existingApplication.AcceptingResponse = entity.AcceptingResponse;
 
                 dbContext.SaveChanges();
 

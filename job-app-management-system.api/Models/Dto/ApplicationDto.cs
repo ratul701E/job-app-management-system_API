@@ -26,6 +26,8 @@ namespace job_app_management_system.api.Models.DTOs
 
         [Required]
         public int MaximumApplication { get; set; }
+
+        public bool AcceptingResponse {  get; set; }
     }
 
 }

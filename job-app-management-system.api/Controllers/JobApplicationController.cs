@@ -17,6 +17,7 @@ namespace job_app_management_system.api.Controllers
         {
             this.jobApplicationService = new JobApplicationService(dbContext);
         }
+
         [HttpGet]
         public Result<List<JobApplicationDto>> GetAllApplication()
         {
@@ -29,8 +30,12 @@ namespace job_app_management_system.api.Controllers
             var res = this.jobApplicationService.Add(jobApplication);
             if (res) return new Result<JobApplicationDto>(false, new List<string> { "Added " }, jobApplication);
             else return new Result<JobApplicationDto>(false, new List<string> { "Failed to add " }, null);
+        }
 
-
+        [HttpGet("{id:int}")]
+        public Result<JobApplicationDto> GetApplicationById(int id)
+        {
+            return new Result<JobApplicationDto>(false, new List<string> { "job application" }, this.jobApplicationService.GetByID(id));
         }
     }
 }
