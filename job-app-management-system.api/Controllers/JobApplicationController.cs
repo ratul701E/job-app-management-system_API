@@ -3,6 +3,7 @@ using job_app_management_system.api.Models;
 using job_app_management_system.api.Models.Dto;
 using job_app_management_system.api.Result;
 using job_app_management_system.api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
