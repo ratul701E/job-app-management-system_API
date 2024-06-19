@@ -20,6 +20,7 @@ namespace job_app_management_system.api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public Result<List<JobApplicationDto>> GetAllApplication()
         {
             return new Result<List<JobApplicationDto>>(false, new List<string> { "All job application" }, this.jobApplicationService.GetAll());
@@ -34,6 +35,7 @@ namespace job_app_management_system.api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public Result<JobApplicationDto> GetApplicationById(int id)
         {
             return new Result<JobApplicationDto>(false, new List<string> { "job application" }, this.jobApplicationService.GetByID(id));

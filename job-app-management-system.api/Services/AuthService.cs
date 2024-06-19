@@ -35,7 +35,7 @@ namespace job_app_management_system.api.Services
             foreach (var user in users) {
                 if (user.Email.Equals(signinDto.Email))
                 {
-                    if(user.Password == signinDto.Password)
+                    if(user.Password.Equals(signinDto.Password))
                     {
                         List<Claim> claims = new List<Claim>
                         {

@@ -3,6 +3,7 @@ using job_app_management_system.api.Models;
 using job_app_management_system.api.Models.DTOs;
 using job_app_management_system.api.Result;
 using job_app_management_system.api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace job_app_management_system.api.Controllers
@@ -16,13 +17,15 @@ namespace job_app_management_system.api.Controllers
         {
             this.applicationService = new ApplicationService(dbContext);
         }
-        [HttpGet] 
+
+        [HttpGet]
+
         public Result<List<ApplicationDto>> GetAllApplication()
         {
             return new Result<List<ApplicationDto>>(false, new List<string> { "Return all applications" }, this.applicationService.GetAll());
         }
 
-        [HttpGet("{appId:int}")] 
+        [HttpGet("{appId:int}")]
         public Result<ApplicationDto> GetAllApplicationByID(int appId)
         {
             var result = this.applicationService.GetByID(appId);
@@ -30,12 +33,14 @@ namespace job_app_management_system.api.Controllers
         }
 
         [HttpPatch("{appId:int}")]
+        [Authorize]
         public Result<ApplicationDto> UpdateApplication(int appId, [FromBody] ApplicationDto application)
         {
             return new Result<ApplicationDto>(false, new List<string> { "Updated" }, this.applicationService.Update(application));
         }
 
         [HttpPost]
+        [Authorize]
         public Result<ApplicationDto> PostApplication([FromBody] ApplicationDto applicationDto)
         {
             var result = this.applicationService.Add(applicationDto);
