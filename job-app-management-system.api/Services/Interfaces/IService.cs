@@ -1,12 +1,14 @@
-﻿namespace job_app_management_system.api.Services.Interfaces
+﻿using job_app_management_system.api.Result;
+
+namespace job_app_management_system.api.Services.Interfaces
 {
     public interface IService<T>
     {
-        public List<T> GetAll();
-        public T GetByID(long id);
-        public bool Add(T entity);
-        public T Remove(T entity);
-        public bool RemoveAll();
-        public T Update(T entity);
+        public Result<List<T>> GetAll();
+        public Result<T> GetByID(long id);
+        public Result<bool> Add(T entity);
+        public Result<T> Remove(T entity);
+        public Result<bool> RemoveAll();
+        public Result<T> Update(T entity);
     }
 }

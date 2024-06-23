@@ -3,6 +3,7 @@ using job_app_management_system.api.Models;
 using job_app_management_system.api.Models.Dto;
 using job_app_management_system.api.Models.DTOs;
 using job_app_management_system.api.Models.job_app_management_system.api.Models;
+using job_app_management_system.api.Result;
 using job_app_management_system.api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,7 @@ namespace job_app_management_system.api.Services
             this.dbContext = dbContext;
         }
 
-        public bool Add(ApplicationDto entity)
+        public Result<bool> Add(ApplicationDto entity)
         {
             try
             {
@@ -44,19 +45,23 @@ namespace job_app_management_system.api.Services
                 dbContext.Applications.Add(application);
                 dbContext.SaveChanges();
 
-                return true;
+                return new Result<bool> { IsError = false, Messages = new List<string> { "added"}, Data = true };
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                return new Result<bool> { IsError = false, Messages = new List<string> { "failed" }, Data = false }; ;
             }
         }
 
 
-        public List<ApplicationDto> GetAll()
+        public Result<List<ApplicationDto>> GetAll()
         {
-            return dbContext.Applications
+            return new Result<List<ApplicationDto>>
+            {
+                IsError = false,
+                Messages = new List<string> { "all appication" },
+                Data = dbContext.Applications
                 .Include(a => a.Requirements)
                 .Include(a => a.Responsibilities)
                 .Include(a => a.JobApplications)
@@ -98,12 +103,13 @@ namespace job_app_management_system.api.Services
                         Skills = ja.Skills != null ? ja.Skills.Select(s => s.Name).ToList() : new List<string>()
                     }).ToList() : new List<JobApplicationDto>()
                 })
-                .ToList();
+                .ToList()
+            };
         }
 
 
 
-        public ApplicationDto GetByID(long id)
+        public Result<ApplicationDto> GetByID(long id)
         {
             var application = dbContext.Applications
                 .Include(a => a.Requirements)
@@ -117,60 +123,63 @@ namespace job_app_management_system.api.Services
                 return null;
             }
 
-            var applicationDto = new ApplicationDto
+            return new Result<ApplicationDto>
             {
-                JobId = application.Id,
-                JobName = application.JobName,
-                Location = application.Location,
-                PublishDate = application.PublishDate,
-                Salary = application.Salary,
-                Description = application.Description,
-                Requirements = application.Requirements?.Select(r => r.Description).ToList() ?? new List<string>(),
-                Responsibilities = application.Responsibilities?.Select(r => r.Description).ToList() ?? new List<string>(),
-                MaximumApplication = application.MaximumApplication,
-                AcceptingResponse = application.AcceptingResponse,
-                JobApplications = application.JobApplications?.Select(ja => new JobApplicationDto
+                IsError = false,
+                Messages = new List<string> { "application of id: " + id },
+                Data = new ApplicationDto
                 {
-                    Id = ja.Id,
-                    ApplicationId = ja.ApplicationId,
-                    Name = ja.Name,
-                    Email = ja.Email,
-                    Phone = ja.Phone,
-                    Dob = ja.Dob,
-                    IsAiubian = ja.IsAiubian,
-                    IsBscCompleted = ja.IsBscCompleted,
-                    IsMscCompleted = ja.IsMscCompleted,
-                    AiubId = ja.AiubId,
-                    BscUniversity = ja.BscUniversity,
-                    BscDepartment = ja.BscDepartment,
-                    BscCGPA = ja.BscCGPA,
-                    BscAdmissionYear = ja.BscAdmissionYear,
-                    BscGraduationYear = ja.BscGraduationYear,
-                    MscUniversity = ja.MscUniversity,
-                    MscDepartment = ja.MscDepartment,
-                    MscCGPA = ja.MscCGPA,
-                    MscAdmissionYear = ja.MscAdmissionYear,
-                    MscGraduationYear = ja.MscGraduationYear,
-                    Skills = ja.Skills?.Select(s => s.Name).ToList() ?? new List<string>()
-                }).ToList() ?? new List<JobApplicationDto>()
-            };
-
-            return applicationDto;
+                    JobId = application.Id,
+                    JobName = application.JobName,
+                    Location = application.Location,
+                    PublishDate = application.PublishDate,
+                    Salary = application.Salary,
+                    Description = application.Description,
+                    Requirements = application.Requirements?.Select(r => r.Description).ToList() ?? new List<string>(),
+                    Responsibilities = application.Responsibilities?.Select(r => r.Description).ToList() ?? new List<string>(),
+                    MaximumApplication = application.MaximumApplication,
+                    AcceptingResponse = application.AcceptingResponse,
+                    JobApplications = application.JobApplications?.Select(ja => new JobApplicationDto
+                    {
+                        Id = ja.Id,
+                        ApplicationId = ja.ApplicationId,
+                        Name = ja.Name,
+                        Email = ja.Email,
+                        Phone = ja.Phone,
+                        Dob = ja.Dob,
+                        IsAiubian = ja.IsAiubian,
+                        IsBscCompleted = ja.IsBscCompleted,
+                        IsMscCompleted = ja.IsMscCompleted,
+                        AiubId = ja.AiubId,
+                        BscUniversity = ja.BscUniversity,
+                        BscDepartment = ja.BscDepartment,
+                        BscCGPA = ja.BscCGPA,
+                        BscAdmissionYear = ja.BscAdmissionYear,
+                        BscGraduationYear = ja.BscGraduationYear,
+                        MscUniversity = ja.MscUniversity,
+                        MscDepartment = ja.MscDepartment,
+                        MscCGPA = ja.MscCGPA,
+                        MscAdmissionYear = ja.MscAdmissionYear,
+                        MscGraduationYear = ja.MscGraduationYear,
+                        Skills = ja.Skills?.Select(s => s.Name).ToList() ?? new List<string>()
+                    }).ToList() ?? new List<JobApplicationDto>()
+                }
+        };
         }
 
 
 
-        public ApplicationDto Remove(ApplicationDto entity)
+        public Result<ApplicationDto> Remove(ApplicationDto entity)
         {
             throw new NotImplementedException();
         }
 
-        public bool RemoveAll()
+        public Result<bool> RemoveAll()
         {
             throw new NotImplementedException();
         }
 
-        public ApplicationDto Update(ApplicationDto entity)
+        public Result<ApplicationDto> Update(ApplicationDto entity)
         {
             var existingApplication = dbContext.Applications
                                 .Include(a => a.Requirements)
@@ -207,7 +216,12 @@ namespace job_app_management_system.api.Services
 
                 dbContext.SaveChanges();
 
-                return entity;
+                return new Result<ApplicationDto>
+                {
+                    IsError = false,
+                    Messages = new List<string> { "updated" },
+                    Data = entity
+                };
             }
             catch (Exception e)
             {

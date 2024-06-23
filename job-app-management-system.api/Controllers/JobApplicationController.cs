@@ -23,22 +23,20 @@ namespace job_app_management_system.api.Controllers
         [Authorize]
         public Result<List<JobApplicationDto>> GetAllApplication()
         {
-            return new Result<List<JobApplicationDto>>(false, new List<string> { "All job application" }, this.jobApplicationService.GetAll());
+            return this.jobApplicationService.GetAll();
         }
 
         [HttpPost]
-        public Result<JobApplicationDto> AddApplication([FromBody] JobApplicationDto jobApplication)
+        public Result<bool> AddApplication([FromBody] JobApplicationDto jobApplication)
         {
-            var res = this.jobApplicationService.Add(jobApplication);
-            if (res) return new Result<JobApplicationDto>(false, new List<string> { "Added " }, jobApplication);
-            else return new Result<JobApplicationDto>(false, new List<string> { "Failed to add " }, null);
+           return this.jobApplicationService.Add(jobApplication);
         }
 
         [HttpGet("{id:int}")]
         [Authorize]
         public Result<JobApplicationDto> GetApplicationById(int id)
         {
-            return new Result<JobApplicationDto>(false, new List<string> { "job application" }, this.jobApplicationService.GetByID(id));
+            return this.jobApplicationService.GetByID(id);
         }
     }
 }

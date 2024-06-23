@@ -19,12 +19,7 @@ namespace job_app_management_system.api.Controllers
         [HttpPost("signin")]
         public Result<SigninDto>  SignIn([FromBody] SigninDto signinDto)
         {
-            return new Result<SigninDto>()
-            {
-                IsError = false,
-                Messages = new List<string>() { "Token" },
-                Data = this.authService.Signin(signinDto)
-            };
+            return this.authService.Signin(signinDto);
         }
     }
 }

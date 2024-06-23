@@ -1,6 +1,7 @@
 ﻿using job_app_management_system.api.Data;
 using job_app_management_system.api.Models;
 using job_app_management_system.api.Models.Dto;
+using job_app_management_system.api.Result;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -19,44 +20,40 @@ namespace job_app_management_system.api.Services
             this.applicationDbContext = applicationDbContext;
         }
 
-        public SigninDto Signin(SigninDto signinDto)
+        public Result<SigninDto> Signin(SigninDto signinDto)
         {
-            //check user is correct
+            var user = applicationDbContext.Users.FirstOrDefault(u => u.Email == signinDto.Email && u.Password == signinDto.Password);
 
-            List<User> users = this.applicationDbContext.Users
-                        .Select(user => new User
-                        {
-                            Id = user.Id,
-                            Email = user.Email,
-                            Password = user.Password,
-                            Role = user.Role,
-                        })
-                        .ToList();
-            foreach (var user in users) {
-                if (user.Email.Equals(signinDto.Email))
+            if (user != null)
+            {
+                List<Claim> claims = new List<Claim>
                 {
-                    if(user.Password.Equals(signinDto.Password))
-                    {
-                        List<Claim> claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Role, "Admin"),
-                            new Claim(ClaimTypes.Email, signinDto.Email)
-                        };
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
 
-                        signinDto.TokenExist = true;
-                        signinDto.Token = this.createToken(claims);
-                        signinDto.Password = "removed :D";
+                signinDto.TokenExist = true;
+                signinDto.Token = createToken(claims);
+                signinDto.Password = "removed :D";
 
-                        return signinDto;
-                    }
-                }
+                return new Result<SigninDto>
+                {
+                    IsError = false,
+                    Messages = new List<string> { "Token generated" },
+                    Data = signinDto
+                };
             }
+
             signinDto.TokenExist = false;
-            return signinDto;
 
-
-            
+            return new Result<SigninDto>
+            {
+                IsError = true,
+                Messages = new List<string> { "Invalid email or password" },
+                Data = signinDto
+            };
         }
+
 
         private string createToken(List<Claim> claims)
         {
