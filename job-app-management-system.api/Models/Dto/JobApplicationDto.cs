@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace job_app_management_system.api.Models.Dto
 {
     public class JobApplicationDto
     {
         public long? Id { get; set; }
+
+        public long ApplicationId { get; set; }
 
         public string Name { get; set; }
 

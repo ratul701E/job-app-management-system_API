@@ -26,6 +26,7 @@ namespace job_app_management_system.api.Models
 
         public ICollection<Requirement> Requirements { get; set; }
         public ICollection<Responsibility> Responsibilities { get; set; }
+        public ICollection<JobApplication> JobApplications { get; set; }
 
         public int MaximumApplication { get; set; }
         public bool AcceptingResponse {  get; set; }

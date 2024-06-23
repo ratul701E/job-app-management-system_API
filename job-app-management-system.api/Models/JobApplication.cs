@@ -5,8 +5,12 @@ namespace job_app_management_system.api.Models
 {
     public class JobApplication
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
+
+        [ForeignKey("Application")]
+        public long ApplicationId { get; set; }
 
         public string Name { get; set; }
 

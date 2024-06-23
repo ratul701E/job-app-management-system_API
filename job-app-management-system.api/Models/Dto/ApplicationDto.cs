@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using job_app_management_system.api.Models.Dto;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 
 namespace job_app_management_system.api.Models.DTOs
@@ -23,6 +24,8 @@ namespace job_app_management_system.api.Models.DTOs
         public List<string> Requirements { get; set; }
 
         public List<string> Responsibilities { get; set; }
+
+        public List<JobApplicationDto> JobApplications { get; set; }
 
         [Required]
         public int MaximumApplication { get; set; }
