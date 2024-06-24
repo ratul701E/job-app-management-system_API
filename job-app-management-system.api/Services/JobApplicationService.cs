@@ -21,8 +21,16 @@ namespace job_app_management_system.api.Services
         {
             try
             {
-                var JobApplication = new JobApplication
+                // Check if the ApplicationId exists in the Applications table
+                var applicationExists = dbContext.Applications.Any(a => a.Id == entity.ApplicationId);
+                if (!applicationExists)
                 {
+                    return new Result<bool> { IsError = true, Messages = new List<string> { "Invalid ApplicationId" }, Data = false };
+                }
+
+                var jobApplication = new JobApplication
+                {
+                    ApplicationId = entity.ApplicationId,
                     Name = entity.Name,
                     Email = entity.Email,
                     Phone = entity.Phone,
@@ -44,21 +52,21 @@ namespace job_app_management_system.api.Services
                     Skills = entity.Skills.Select(r => new Skill
                     {
                         Name = r
-
                     }).ToList(),
                 };
 
-                dbContext.JobApplications.Add(JobApplication);
+                dbContext.JobApplications.Add(jobApplication);
                 dbContext.SaveChanges();
 
-                return new Result<bool> { IsError = false, Messages = new List<string> { "added" }, Data = true }; ;
+                return new Result<bool> { IsError = false, Messages = new List<string> { "Added successfully" }, Data = true };
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new Result<bool> { IsError = false, Messages = new List<string> { "failed" }, Data = false }; ;
+                return new Result<bool> { IsError = true, Messages = new List<string> { "Failed to add job application" }, Data = false };
             }
         }
+
 
 
         public Result<List<JobApplicationDto>> GetAll()
