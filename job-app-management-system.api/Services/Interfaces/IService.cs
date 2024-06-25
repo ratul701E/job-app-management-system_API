@@ -7,7 +7,7 @@ namespace job_app_management_system.api.Services.Interfaces
         public Result<List<T>> GetAll();
         public Result<T> GetByID(long id);
         public Result<bool> Add(T entity);
-        public Result<T> Remove(T entity);
+        public Result<T> Remove(long id);
         public Result<bool> RemoveAll();
         public Result<T> Update(T entity);
     }

@@ -31,6 +31,10 @@ namespace job_app_management_system.api.Models.DTOs
         public int MaximumApplication { get; set; }
 
         public bool AcceptingResponse {  get; set; }
+
+        public int? AlreadyApplied {  get; set; }
+
+        public bool IsNegotiable   { get; set; }
     }
 
 }

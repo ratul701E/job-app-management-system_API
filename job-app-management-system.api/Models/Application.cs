@@ -30,5 +30,6 @@ namespace job_app_management_system.api.Models
 
         public int MaximumApplication { get; set; }
         public bool AcceptingResponse {  get; set; }
+        public bool IsNegotiable { get; set; }
     }
 }

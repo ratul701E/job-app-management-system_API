@@ -144,7 +144,7 @@ namespace job_app_management_system.api.Services
         }
 
 
-        public Result<JobApplicationDto> Remove(JobApplicationDto entity)
+        public Result<JobApplicationDto> Remove(long id)
         {
             throw new NotImplementedException();
         }

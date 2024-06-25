@@ -15,7 +15,7 @@ namespace jobappmanagementsystem.api.Migrations
                 table: "JobApplications",
                 type: "bigint",
                 nullable: false,
-                defaultValue: 1L);
+                defaultValue: 5L);
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_ApplicationId",

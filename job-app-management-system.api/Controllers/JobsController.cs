@@ -26,7 +26,7 @@ namespace job_app_management_system.api.Controllers
         }
 
         [HttpGet("{appId:int}")]
-        public Result<ApplicationDto> GetAllApplicationByID(int appId)
+        public Result<ApplicationDto> GetApplicationByID(int appId)
         {
             var result = this.applicationService.GetByID(appId);
             return result;
@@ -44,6 +44,13 @@ namespace job_app_management_system.api.Controllers
         public Result<bool> PostApplication([FromBody] ApplicationDto applicationDto)
         {
             return this.applicationService.Add(applicationDto);
+        }
+
+        [HttpDelete("{appId:int}")]
+        [Authorize]
+        public Result<ApplicationDto> DeleteApplication(int appId)
+        {
+            return this.applicationService.Remove(appId);
         }
     }
 }
