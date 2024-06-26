@@ -168,11 +168,22 @@ namespace job_app_management_system.api.Services
             var existingApplication = dbContext.Applications
                                 .Include(a => a.Requirements)
                                 .Include(a => a.Responsibilities)
+                                .Include(a => a.JobApplications)
                                 .FirstOrDefault(a => a.Id == entity.JobId);
 
             if (existingApplication == null)
             {
                 return null;
+            }
+
+            if(entity.MaximumApplication < existingApplication.JobApplications.Count)
+            {
+                return new Result<ApplicationDto>
+                {
+                    IsError = true,
+                    Messages = new List<string> { "Cannot set lower value than applicant count" },
+                    Data = null
+                };
             }
 
             try
@@ -181,6 +192,7 @@ namespace job_app_management_system.api.Services
                 existingApplication.PublishDate = entity.PublishDate;
                 existingApplication.Location = entity.Location;
                 existingApplication.Salary = entity.Salary;
+                existingApplication.IsNegotiable = entity.IsNegotiable;
                 existingApplication.Description = entity.Description;
                 existingApplication.Requirements.Clear();
                 existingApplication.Responsibilities.Clear();

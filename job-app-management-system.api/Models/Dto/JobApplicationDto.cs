@@ -36,5 +36,10 @@ namespace job_app_management_system.api.Models.Dto
         public int? MscGraduationYear { get; set; }
 
         public List<string> Skills { get; set; }
+
+        public double ExpectedSalary { get; set; }
+
+        /*public IFormFile CV {  get; set; }
+        public IFormFile CoverLetter { get; set; }*/
     }
 }

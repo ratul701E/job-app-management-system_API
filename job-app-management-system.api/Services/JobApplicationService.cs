@@ -1,8 +1,6 @@
 ﻿using job_app_management_system.api.Data;
 using job_app_management_system.api.Models;
 using job_app_management_system.api.Models.Dto;
-using job_app_management_system.api.Models.DTOs;
-using job_app_management_system.api.Models.job_app_management_system.api.Models;
 using job_app_management_system.api.Result;
 using job_app_management_system.api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,16 +15,57 @@ namespace job_app_management_system.api.Services
             this.dbContext = dbContext;
         }
 
+        private static JobApplicationDto JobApplicationToJobApplicationDto(JobApplication jobApplication)
+        {
+            return new JobApplicationDto
+            {
+                Id = jobApplication.Id,
+                Name = jobApplication.Name,
+                Email = jobApplication.Email,
+                Phone = jobApplication.Phone,
+                Dob = jobApplication.Dob,
+                IsAiubian = jobApplication.IsAiubian,
+                IsBscCompleted = jobApplication.IsBscCompleted,
+                IsMscCompleted = jobApplication.IsMscCompleted,
+                AiubId = jobApplication.AiubId,
+                BscUniversity = jobApplication.BscUniversity,
+                BscDepartment = jobApplication.BscDepartment,
+                BscCGPA = jobApplication.BscCGPA,
+                BscAdmissionYear = jobApplication.BscAdmissionYear,
+                BscGraduationYear = jobApplication.BscGraduationYear,
+                MscUniversity = jobApplication.MscUniversity,
+                MscDepartment = jobApplication.MscDepartment,
+                MscAdmissionYear = jobApplication.MscAdmissionYear,
+                MscGraduationYear = jobApplication.MscGraduationYear,
+                MscCGPA = jobApplication.MscCGPA,
+                Skills = jobApplication.Skills != null ? jobApplication.Skills.Select(s => s.Name).ToList() : new List<string>(),
+                ExpectedSalary = jobApplication.ExpectedSalary
+            };
+        }
+
         public Result<bool> Add(JobApplicationDto entity)
         {
             try
             {
-                // Check if the ApplicationId exists in the Applications table
-                var applicationExists = dbContext.Applications.Any(a => a.Id == entity.ApplicationId);
-                if (!applicationExists)
+                var application = dbContext.Applications
+                    .Include(a => a.JobApplications)
+                    .FirstOrDefault(a => a.Id == entity.ApplicationId);
+
+                if (application == null)
                 {
                     return new Result<bool> { IsError = true, Messages = new List<string> { "Invalid ApplicationId" }, Data = false };
                 }
+
+                if (application.JobApplications.Any(ja => ja.Email == entity.Email))
+                {
+                    return new Result<bool> { IsError = true, Messages = new List<string> { "Email Already Exists" }, Data = false };
+                }
+                if (application.MaximumApplication == application.JobApplications.Count)
+                {
+                    return new Result<bool> { IsError = true, Messages = new List<string> { "Limit Reached" }, Data = false };
+                }
+
+
 
                 var jobApplication = new JobApplication
                 {
@@ -53,6 +92,7 @@ namespace job_app_management_system.api.Services
                     {
                         Name = r
                     }).ToList(),
+                    ExpectedSalary = entity.ExpectedSalary,
                 };
 
                 dbContext.JobApplications.Add(jobApplication);
@@ -62,45 +102,24 @@ namespace job_app_management_system.api.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
                 return new Result<bool> { IsError = true, Messages = new List<string> { "Failed to add job application" }, Data = false };
             }
         }
 
 
 
+
         public Result<List<JobApplicationDto>> GetAll()
         {
-            return new Result<List<JobApplicationDto>> { IsError = false, Messages = new List<string>{ "All jobs"},
+            return new Result<List<JobApplicationDto>>
+            {
+                IsError = false,
+                Messages = new List<string> { "All jobs" },
                 Data = this.dbContext.JobApplications
-                        .Select(jobApp => new JobApplicationDto
-                        {
-                            Id = jobApp.Id,
-                            Name = jobApp.Name,
-                            Email = jobApp.Email,
-                            Phone = jobApp.Phone,
-                            Dob = jobApp.Dob,
-                            IsAiubian = jobApp.IsAiubian,
-                            IsBscCompleted = jobApp.IsBscCompleted,
-                            IsMscCompleted = jobApp.IsMscCompleted,
-                            AiubId = jobApp.AiubId,
-                            BscUniversity = jobApp.BscUniversity,
-                            BscDepartment = jobApp.BscDepartment,
-                            BscCGPA = jobApp.BscCGPA,
-                            BscAdmissionYear = jobApp.BscAdmissionYear,
-                            BscGraduationYear = jobApp.BscGraduationYear,
-                            MscUniversity = jobApp.MscUniversity,
-                            MscDepartment = jobApp.MscDepartment,
-                            MscAdmissionYear = jobApp.MscAdmissionYear,
-                            MscGraduationYear = jobApp.MscGraduationYear,
-                            MscCGPA = jobApp.MscCGPA,
-                            Skills = jobApp.Skills.Select(s => s.Name).ToList()
-                        })
+                        .Select(jobApp => JobApplicationToJobApplicationDto(jobApp))
                         .ToList()
             };
         }
-
-
 
         public Result<JobApplicationDto> GetByID(long id)
         {
@@ -117,32 +136,9 @@ namespace job_app_management_system.api.Services
             {
                 IsError = false,
                 Messages = new List<string> { "job of id " + id },
-                Data = new JobApplicationDto
-                {
-                    Id = jobApplication.Id,
-                    Name = jobApplication.Name,
-                    Email = jobApplication.Email,
-                    Phone = jobApplication.Phone,
-                    Dob = jobApplication.Dob,
-                    IsAiubian = jobApplication.IsAiubian,
-                    IsBscCompleted = jobApplication.IsBscCompleted,
-                    IsMscCompleted = jobApplication.IsMscCompleted,
-                    AiubId = jobApplication.AiubId,
-                    BscUniversity = jobApplication.BscUniversity,
-                    BscDepartment = jobApplication.BscDepartment,
-                    BscCGPA = jobApplication.BscCGPA,
-                    BscAdmissionYear = jobApplication.BscAdmissionYear,
-                    BscGraduationYear = jobApplication.BscGraduationYear,
-                    MscUniversity = jobApplication.MscUniversity,
-                    MscDepartment = jobApplication.MscDepartment,
-                    MscAdmissionYear = jobApplication.MscAdmissionYear,
-                    MscGraduationYear = jobApplication.MscGraduationYear,
-                    MscCGPA = jobApplication.MscCGPA,
-                    Skills = jobApplication.Skills != null ? jobApplication.Skills.Select(s => s.Name).ToList() : new List<string>()
-                }
+                Data = JobApplicationToJobApplicationDto(jobApplication)
             };
         }
-
 
         public Result<JobApplicationDto> Remove(long id)
         {

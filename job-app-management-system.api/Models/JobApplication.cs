@@ -39,5 +39,7 @@ namespace job_app_management_system.api.Models
         public int? MscGraduationYear { get; set; }
 
         public ICollection<Skill> Skills { get; set; }
+
+        public double ExpectedSalary { get; set; }
     }
 }
