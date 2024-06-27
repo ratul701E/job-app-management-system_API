@@ -14,9 +14,9 @@ namespace job_app_management_system.api.Controllers
     public class JobApplicationController : ControllerBase
     {
         private JobApplicationService jobApplicationService;
-        public JobApplicationController(ApplicationDbContext dbContext)
+        public JobApplicationController(ApplicationDbContext dbContext, IWebHostEnvironment environment)
         {
-            this.jobApplicationService = new JobApplicationService(dbContext);
+            this.jobApplicationService = new JobApplicationService(dbContext, environment);
         }
 
         [HttpGet]
@@ -27,7 +27,7 @@ namespace job_app_management_system.api.Controllers
         }
 
         [HttpPost]
-        public Result<bool> AddApplication([FromBody] JobApplicationDto jobApplication)
+        public Result<bool> AddApplication([FromForm] JobApplicationDto jobApplication)
         {
            return this.jobApplicationService.Add(jobApplication);
         }

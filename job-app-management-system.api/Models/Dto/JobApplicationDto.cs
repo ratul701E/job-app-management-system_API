@@ -39,7 +39,7 @@ namespace job_app_management_system.api.Models.Dto
 
         public double ExpectedSalary { get; set; }
 
-        /*public IFormFile CV {  get; set; }
-        public IFormFile CoverLetter { get; set; }*/
+        public IFormFile CV { get; set; }
+        public IFormFile CoverLetter { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace job_app_management_system.api.Models.DTOs
         public double Salary { get; set; }
 
         public string  PublishDate { get; set; }
+        public string  Deadline { get; set; }
 
         [MaxLength(1000)]
         public string Description { get; set; }

@@ -19,11 +19,11 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
+            policy.WithOrigins("http://localhost:4200")
                   .AllowAnyHeader();
         });
 });
+
 
 // Configure JWT authentication
 var jwtSettings = builder.Configuration.GetSection("TokenConf");

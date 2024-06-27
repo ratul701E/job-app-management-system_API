@@ -25,6 +25,7 @@ namespace job_app_management_system.api.Services
                 JobName = application.JobName,
                 Location = application.Location,
                 PublishDate = application.PublishDate,
+                Deadline = application.Deadline,
                 Salary = application.Salary,
                 IsNegotiable = application.IsNegotiable,
                 Description = application.Description,
@@ -68,6 +69,7 @@ namespace job_app_management_system.api.Services
                 {
                     JobName = entity.JobName,
                     PublishDate = entity.PublishDate,
+                    Deadline = entity.Deadline,
                     Location = entity.Location,
                     Salary = entity.Salary,
                     Description = entity.Description,

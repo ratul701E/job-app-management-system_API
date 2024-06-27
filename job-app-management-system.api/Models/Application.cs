@@ -15,6 +15,7 @@ namespace job_app_management_system.api.Models
 
         
         public string PublishDate {  get; set; }
+        public string Deadline {  get; set; }
 
         
         public string Location { get; set; }

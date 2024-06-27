@@ -10,9 +10,11 @@ namespace job_app_management_system.api.Services
     public class JobApplicationService : IService<JobApplicationDto>
     {
         private ApplicationDbContext dbContext;
-        public JobApplicationService(ApplicationDbContext dbContext)
+        private readonly IWebHostEnvironment environment;
+        public JobApplicationService(ApplicationDbContext dbContext, IWebHostEnvironment environment)
         {
             this.dbContext = dbContext;
+            this.environment = environment;
         }
 
         private static JobApplicationDto JobApplicationToJobApplicationDto(JobApplication jobApplication)
@@ -66,7 +68,6 @@ namespace job_app_management_system.api.Services
                 }
 
 
-
                 var jobApplication = new JobApplication
                 {
                     ApplicationId = entity.ApplicationId,
@@ -98,10 +99,15 @@ namespace job_app_management_system.api.Services
                 dbContext.JobApplications.Add(jobApplication);
                 dbContext.SaveChanges();
 
+
+                this.SaveFile(entity.CV, "CV_" + entity.Email);
+                this.SaveFile(entity.CoverLetter, "CoverLetter_" + entity.Email);
+
                 return new Result<bool> { IsError = false, Messages = new List<string> { "Added successfully" }, Data = true };
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return new Result<bool> { IsError = true, Messages = new List<string> { "Failed to add job application" }, Data = false };
             }
         }
@@ -154,5 +160,29 @@ namespace job_app_management_system.api.Services
         {
             throw new NotImplementedException();
         }
+
+        /**/
+
+        private string? SaveFile(IFormFile file, string name)
+        {
+            if (file == null || file.Length == 0) return null;
+
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+
+            if (!Directory.Exists(uploadsPath)) Directory.CreateDirectory(uploadsPath);
+
+            var fileName = name + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return fileName;
+        }
     }
 }
+
+
+/**/
