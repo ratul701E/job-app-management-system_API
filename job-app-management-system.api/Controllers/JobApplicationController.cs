@@ -27,7 +27,7 @@ namespace job_app_management_system.api.Controllers
         }
 
         [HttpPost]
-        public Result<bool> AddApplication([FromForm] JobApplicationDto jobApplication)
+        public Result<bool> AddApplication([FromBody] JobApplicationDto jobApplication)
         {
            return this.jobApplicationService.Add(jobApplication);
         }

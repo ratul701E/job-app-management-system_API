@@ -41,7 +41,11 @@ namespace job_app_management_system.api.Services
                 MscGraduationYear = jobApplication.MscGraduationYear,
                 MscCGPA = jobApplication.MscCGPA,
                 Skills = jobApplication.Skills != null ? jobApplication.Skills.Select(s => s.Name).ToList() : new List<string>(),
-                ExpectedSalary = jobApplication.ExpectedSalary
+                ExpectedSalary = jobApplication.ExpectedSalary,
+                CoverLetter = jobApplication.CoverLetter,
+                CV = jobApplication.CV,
+                //CV = RetrieveFile("CV"jobApplication.)
+                //this.SaveFile(entity.CoverLetter, entity.ApplicationId.ToString(), "CoverLetter_" + entity.Email);
             };
         }
 
@@ -67,6 +71,8 @@ namespace job_app_management_system.api.Services
                     return new Result<bool> { IsError = true, Messages = new List<string> { "Limit Reached" }, Data = false };
                 }
 
+                //this.SaveFile(entity.CV, entity.ApplicationId.ToString(), "CV_" + entity.Email);
+                //this.SaveFile(entity.CoverLetter, entity.ApplicationId.ToString(), "CoverLetter_" + entity.Email);
 
                 var jobApplication = new JobApplication
                 {
@@ -94,14 +100,14 @@ namespace job_app_management_system.api.Services
                         Name = r
                     }).ToList(),
                     ExpectedSalary = entity.ExpectedSalary,
+                    CV = entity.CV,
+                    CoverLetter = entity.CoverLetter,
                 };
-
+                Console.WriteLine(entity.CV.ToString());
                 dbContext.JobApplications.Add(jobApplication);
                 dbContext.SaveChanges();
 
 
-                this.SaveFile(entity.CV, "CV_" + entity.Email);
-                this.SaveFile(entity.CoverLetter, "CoverLetter_" + entity.Email);
 
                 return new Result<bool> { IsError = false, Messages = new List<string> { "Added successfully" }, Data = true };
             }
@@ -111,9 +117,6 @@ namespace job_app_management_system.api.Services
                 return new Result<bool> { IsError = true, Messages = new List<string> { "Failed to add job application" }, Data = false };
             }
         }
-
-
-
 
         public Result<List<JobApplicationDto>> GetAll()
         {
@@ -160,29 +163,5 @@ namespace job_app_management_system.api.Services
         {
             throw new NotImplementedException();
         }
-
-        /**/
-
-        private string? SaveFile(IFormFile file, string name)
-        {
-            if (file == null || file.Length == 0) return null;
-
-            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
-
-            if (!Directory.Exists(uploadsPath)) Directory.CreateDirectory(uploadsPath);
-
-            var fileName = name + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadsPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-
-            return fileName;
-        }
     }
 }
-
-
-/**/

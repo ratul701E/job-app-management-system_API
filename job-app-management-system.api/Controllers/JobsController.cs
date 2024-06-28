@@ -26,9 +26,9 @@ namespace job_app_management_system.api.Controllers
         }
 
         [HttpGet("{appId:int}")]
-        public Result<ApplicationDto> GetApplicationByID(int appId)
+        public Result<ApplicationDto> GetApplicationByID(int appId, [FromQuery(Name = "includeApplications")] bool includeApplications)
         {
-            var result = this.applicationService.GetByID(appId);
+            var result = this.applicationService.GetByID(appId, includeApplications);
             return result;
         }
 

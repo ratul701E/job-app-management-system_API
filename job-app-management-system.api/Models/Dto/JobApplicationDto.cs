@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Buffers.Text;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace job_app_management_system.api.Models.Dto
@@ -39,7 +40,7 @@ namespace job_app_management_system.api.Models.Dto
 
         public double ExpectedSalary { get; set; }
 
-        public IFormFile CV { get; set; }
-        public IFormFile CoverLetter { get; set; }
+        public string CV { get; set; }
+        public string CoverLetter { get; set; }
     }
 }

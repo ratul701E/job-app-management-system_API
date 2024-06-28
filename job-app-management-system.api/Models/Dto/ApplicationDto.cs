@@ -26,7 +26,7 @@ namespace job_app_management_system.api.Models.DTOs
 
         public List<string> Responsibilities { get; set; }
 
-        public List<JobApplicationDto> JobApplications { get; set; }
+        public List<JobApplicationDto>? JobApplications { get; set; }
 
         [Required]
         public int MaximumApplication { get; set; }

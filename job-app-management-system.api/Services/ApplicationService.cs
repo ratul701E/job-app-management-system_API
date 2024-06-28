@@ -17,9 +17,9 @@ namespace job_app_management_system.api.Services
             this.dbContext = dbContext;
         }
 
-        private static ApplicationDto ApplictionToApplicationDto(Application application)
+        private static ApplicationDto ApplictionToApplicationDto(Application application, bool bindJobApps = false)
         {
-            return new ApplicationDto
+            var applicationDto = new ApplicationDto
             {
                 JobId = application.Id,
                 JobName = application.JobName,
@@ -34,7 +34,11 @@ namespace job_app_management_system.api.Services
                 MaximumApplication = application.MaximumApplication,
                 AcceptingResponse = application.AcceptingResponse,
                 AlreadyApplied = application.JobApplications.Count,
-                JobApplications = application.JobApplications?.Select(ja => new JobApplicationDto
+            };
+
+            if(bindJobApps)
+            {
+                applicationDto.JobApplications = application.JobApplications?.Select(ja => new JobApplicationDto
                 {
                     Id = ja.Id,
                     ApplicationId = ja.ApplicationId,
@@ -56,9 +60,14 @@ namespace job_app_management_system.api.Services
                     MscCGPA = ja.MscCGPA,
                     MscAdmissionYear = ja.MscAdmissionYear,
                     MscGraduationYear = ja.MscGraduationYear,
-                    Skills = ja.Skills?.Select(s => s.Name).ToList() ?? new List<string>()
-                }).ToList() ?? new List<JobApplicationDto>()
-            };
+                    Skills = ja.Skills?.Select(s => s.Name).ToList() ?? new List<string>(),
+                    CV = ja.CV,
+                    CoverLetter = ja.CoverLetter,
+                }).ToList();
+            }
+
+
+            return applicationDto;  
         }
 
         public Result<bool> Add(ApplicationDto entity)
@@ -90,12 +99,12 @@ namespace job_app_management_system.api.Services
                 dbContext.Applications.Add(application);
                 dbContext.SaveChanges();
 
-                return new Result<bool> { IsError = false, Messages = new List<string> { "added"}, Data = true };
+                return new Result<bool> { IsError = false, Messages = new List<string> { "Openings added successfully"}, Data = true };
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new Result<bool> { IsError = false, Messages = new List<string> { "failed" }, Data = false }; ;
+                return new Result<bool> { IsError = true, Messages = new List<string> { "Unexpected Error Ocurred" }, Data = false }; ;
             }
         }
 
@@ -111,14 +120,14 @@ namespace job_app_management_system.api.Services
                 .Include(a => a.Responsibilities)
                 .Include(a => a.JobApplications)
                     .ThenInclude(ja => ja.Skills)
-                .Select(application => ApplictionToApplicationDto(application))
+                .Select(application => ApplictionToApplicationDto(application, false))
                 .ToList()
             };
         }
 
 
 
-        public Result<ApplicationDto> GetByID(long id)
+        public Result<ApplicationDto> GetByID(long id, bool includeApplications)
         {
             var application = dbContext.Applications
                 .Include(a => a.Requirements)
@@ -129,18 +138,26 @@ namespace job_app_management_system.api.Services
 
             if (application == null)
             {
-                return null;
+                return new Result<ApplicationDto>
+                {
+                    IsError = true,
+                    Messages = new List<string> { "No application is found with id: " + id },
+                    Data = null
+                };
             }
 
             return new Result<ApplicationDto>
             {
                 IsError = false,
                 Messages = new List<string> { "application of id: " + id },
-                Data = ApplictionToApplicationDto(application)
+                Data = ApplictionToApplicationDto(application, includeApplications)
             };
         }
 
-
+        public Result<ApplicationDto> GetByID(long id)
+        {
+            throw new NotImplementedException();
+        }
 
         public Result<ApplicationDto> Remove(long id)
         {
@@ -151,13 +168,13 @@ namespace job_app_management_system.api.Services
                     .ThenInclude(ja => ja.Skills)
                 .FirstOrDefault(a => a.Id == id);
 
-            if(application == null) return new Result<ApplicationDto>() { IsError = true, Messages = new List<string> { "not found" }, Data = null };
-            if(application.JobApplications.Count > 0) return new Result<ApplicationDto>() { IsError = true, Messages = new List<string> { "application exist" }, Data = null };
+            if(application == null) return new Result<ApplicationDto>() { IsError = true, Messages = new List<string> { "No application is found with id: " + id }, Data = null };
+            if(application.JobApplications.Count > 0) return new Result<ApplicationDto>() { IsError = true, Messages = new List<string> { "Delete is not possible. Application exist" }, Data = null };
 
             this.dbContext.Remove(application);
             this.dbContext.SaveChanges();
 
-            return new Result<ApplicationDto>() { IsError = false, Messages = new List<string> { "adelted" }, Data = ApplictionToApplicationDto(application) };
+            return new Result<ApplicationDto>() { IsError = false, Messages = new List<string> { "Applicaiton Deleted" }, Data = ApplictionToApplicationDto(application) };
         }
 
         public Result<bool> RemoveAll()
@@ -192,6 +209,7 @@ namespace job_app_management_system.api.Services
             {
                 existingApplication.JobName = entity.JobName;
                 existingApplication.PublishDate = entity.PublishDate;
+                existingApplication.Deadline = entity.Deadline;
                 existingApplication.Location = entity.Location;
                 existingApplication.Salary = entity.Salary;
                 existingApplication.IsNegotiable = entity.IsNegotiable;
@@ -217,7 +235,7 @@ namespace job_app_management_system.api.Services
                 return new Result<ApplicationDto>
                 {
                     IsError = false,
-                    Messages = new List<string> { "updated" },
+                    Messages = new List<string> { "Opening Updated" },
                     Data = entity
                 };
             }

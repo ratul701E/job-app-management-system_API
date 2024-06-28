@@ -41,5 +41,7 @@ namespace job_app_management_system.api.Models
         public ICollection<Skill> Skills { get; set; }
 
         public double ExpectedSalary { get; set; }
+        public string CV { get; set; }
+        public string CoverLetter { get; set; }
     }
 }
