@@ -44,8 +44,6 @@ namespace job_app_management_system.api.Services
                 ExpectedSalary = jobApplication.ExpectedSalary,
                 CoverLetter = jobApplication.CoverLetter,
                 CV = jobApplication.CV,
-                //CV = RetrieveFile("CV"jobApplication.)
-                //this.SaveFile(entity.CoverLetter, entity.ApplicationId.ToString(), "CoverLetter_" + entity.Email);
             };
         }
 
@@ -71,8 +69,6 @@ namespace job_app_management_system.api.Services
                     return new Result<bool> { IsError = true, Messages = new List<string> { "Limit Reached" }, Data = false };
                 }
 
-                //this.SaveFile(entity.CV, entity.ApplicationId.ToString(), "CV_" + entity.Email);
-                //this.SaveFile(entity.CoverLetter, entity.ApplicationId.ToString(), "CoverLetter_" + entity.Email);
 
                 var jobApplication = new JobApplication
                 {
@@ -106,8 +102,6 @@ namespace job_app_management_system.api.Services
                 Console.WriteLine(entity.CV.ToString());
                 dbContext.JobApplications.Add(jobApplication);
                 dbContext.SaveChanges();
-
-
 
                 return new Result<bool> { IsError = false, Messages = new List<string> { "Added successfully" }, Data = true };
             }
